@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sales.book.mybatis.mapper.goods">
+
+	<select id="selectGoodsList" resultType="goodsVO">
+	<![CDATA[
+		SELECT 
+	 		 b.*, c.goods_fileName
+     	FROM
+		  	 shopping_goods b, shopping_goods_image c
+	  	WHERE
+		  	 b.goods_id = c.goods_id
+	    AND
+		     c.filetype = "main_image"
+	    AND
+		     b.goods_status = #{goodsStatus}
+	    ORDER BY
+		     b.goods_credate DESC LIMIT 15
+	]]>
+	</select>
+	
+	<select id="selectGoodsDetail" resultType="goodsVO">
+	
+		SELECT 
+			a.*, b.goods_fileName
+		FROM
+			shopping_goods a, shopping_goods_image b
+		WHERE
+			a.goods_id = b.goods_id
+		AND
+			b.filetype = 'main_image'
+		AND
+			a.goods_id = #{goods_id}
+		ORDER BY
+			a.goods_id
+			
+	</select>
+	
+	<select id="searchGoods" resultType="goodsVO" parameterType="String">
+		SELECT
+			a.*, b.goods_fileName 
+		FROM 
+			shopping_goods a, shopping_goods_image b
+		WHERE
+			a.goods_id = b.goods_id
+		AND
+			b.filetype = 'main_image'
+		AND
+			a.goods_title like CONCAT('%',#{searchWord},'%') <!-- #{searchWord} -->
+		ORDER BY
+			a.goods_credate DESC
+	</select>
+
+	<select id="selectKeywordSearch" resultType="String" parameterType="String">
+		SELECT
+			goods_title
+		FROM
+			shopping_goods
+		WHERE
+			goods_title like CONCAT('%',#{keyword},'%') <!-- '%#{keyword}%' -->
+		ORDER BY
+			goods_credate DESC
+	</select>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace ="com.sales.book.mybatis.mapper.cart">
+	
+	<!-- 장바구니에 넣는 상품 번호가 장바구니 테이블에 담겨 있는지 확인 -->
+	<select id="selectCountInCart" resultType="INT" parameterType="cartVO">
+		SELECT 
+			COUNT(*)
+		FROM 
+			shopping_cart_detail a, shopping_cart b
+		WHERE
+			a.shopping_cart_id = b.cart_id
+		AND
+			a.shopping_goods_id = #{goods_id}
+		AND
+			b.shopping_member_id = #{member_id}
+	</select>
+	
+	<!-- 필요 없을 듯
+	<insert id = "insertGoodsInCart" parameterType="cartVO">
+		INSERT INTO shopping_cart(shopping_member_id)
+		VALUES(#{member_id})
+	</insert>
+	 -->
+	 
+	<insert id="insertGoodsDetailInCart" parameterType="cartVO">
+		INSERT INTO shopping_cart_detail(shopping_cart_id, shopping_goods_id, cart_goods_qty)
+		VALUES(#{cart_id}, #{goods_id}, 1)
+	</insert>
+	
+	<select id="selectMyGoodsList" resultType="cartListVO" parameterType="cartVO">
+		SELECT *, shopping_goods_id AS goods_id
+		FROM
+			shopping_cart a, shopping_cart_detail b, shopping_goods c, shopping_goods_image d, member e
+		WHERE
+			a.cart_id = b.shopping_cart_id
+		AND
+			a.shopping_member_id = e.member_id
+		AND
+			a.shopping_member_id = #{member_id}
+		AND
+			b.shopping_goods_id = c.goods_id
+		AND 
+			c.goods_id = d.goods_id
+		AND
+			d.fileType = 'main_image'
+	</select>
+	
+	<update id="updateCartGoodsQty" parameterType="cartVO">
+	UPDATE 
+		shopping_cart_detail
+	SET
+		cart_goods_qty = #{cart_goods_qty}
+	WHERE
+		shopping_goods_id = #{goods_id}
+	AND
+		shopping_cart_id = #{cart_id}
+	</update>
+	
+	<delete id="deleteCartGoods" parameterType="java.util.Map">
+	DELETE 
+	FROM	
+		shopping_cart_detail
+	WHERE
+		shopping_cart_id = #{cart_id}
+	AND	
+		shopping_goods_id = #{goods_id}
+    
+	</delete>
+	 
+	<!-- 장바구니 목록 보여주기
+	<select id="selectMyCartList" resultType="" parameterType="cartVO">
+		SELECT 
+			a.member_id, d.goods_title, d.goods_price, d.goods_sales_price, e.goods_fileName, e.fileType
+		FROM 
+			member a, shopping_cart b, shopping_cart_detail c, shopping_goods d, shopping_goods_image e
+		WHERE
+			a.member_id = b.shopping_member_id
+		AND
+			b.cart_id = c.shopping_cart_id
+		AND
+			d.goods_id = c.shopping_goods_id
+		AND
+			e.fileType = 'main_image'
+		AND
+			d.goods_id = e.goods_id
+	</select>
+ -->
+	<!-- 
+	<select id = "cartResult">
+		SELECT *
+		FROM
+			shopping_cart
+		WHERE
+			shopping_member_id = #{member_id}
+	</select>
+	
+	<select id = "goodsResult">
+		SELECT *
+		FROM
+			shopping_goods a, shopping_goods_image b
+		WHERE 
+			a.goods_id = b.goods_id
+		AND 
+			b.fileType='main_image'
+		AND
+			a.goods_id = in
+	</select>
+	 -->
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sales.book.mybatis.mapper.mypage">
+
+<select id="selectMyOrderGoodsList" parameterType="String" resultType="orderVO">
+	SELECT 	*, good_quantity AS cart_goods_qty
+	FROM
+		shopping_order a, shopping_order_detail b, member c, shopping_goods d
+	WHERE
+		c.member_id = #{member_id}
+	AND
+		a.order_member_id = c.member_id
+	AND
+		a.order_id = b.shopping_order_id 
+	AND
+		b.order_goods_id = d.goods_id
+	ORDER BY 
+		order_date desc
+</select>
+
+<select id="selectMyOrderDetailGoodsList" parameterType="String" resultType="orderVO">
+	SELECT *, good_quantity AS cart_goods_qty
+	FROM
+		shopping_order a, shopping_order_detail b, shopping_goods c, shopping_goods_image d
+	WHERE
+		a.order_id = #{order_id}
+	AND
+		a.order_id = b.shopping_order_id
+	AND
+		b.order_goods_id = c.goods_id
+	AND
+		c.goods_id = d.goods_id
+	AND
+		d.fileType = 'main_image'
+</select>
+
+<update id="cancelMyOrder" parameterType="String">
+	UPDATE 
+		shopping_order
+	SET
+		delivery_state = 'cancel_order'
+	WHERE
+		order_id = #{order_id}
+</update>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sales.book.mybatis.mapper.member">
+	
+	<insert id="insertNewMember" parameterType="memberVO">
+		INSERT INTO member(member_id, member_pw, member_name, member_gender,
+						member_birth_y, member_birth_m, member_birth_d, member_hp1,	member_hp2, member_hp3, member_tel1, member_tel2, member_tel3, member_email1, member_email2)
+		VALUES(#{member_id}, #{member_pw}, #{member_name}, #{member_gender},
+			#{member_birth_y}, #{member_birth_m}, #{member_birth_d}, #{member_hp1}, #{member_hp2}, #{member_hp3}, #{member_tel1}, #{member_tel2}, #{member_tel3}, #{member_email1}, #{member_email2})
+	</insert>
+	
+	<insert id="insertAddress" parameterType="memberVO">
+		INSERT INTO member_address
+    		(member_id, post_code, parcel_address, street_address, detail_address)
+    	VALUES
+    		(#{member_id}, #{post_code}, #{parcel_address}, #{street_address}, #{detail_address})
+	</insert>
+	
+	<insert id="createCart" parameterType="memberVO">
+		INSERT INTO shopping_cart
+			(shopping_member_id, cart_id)
+		VALUES
+			(#{member_id}, (select max(cart_id)+1 from shopping_cart a))
+	</insert>
+	
+	<select id="overlappedID" parameterType="String" resultType="String">
+		SELECT 
+			COUNT(*) 
+		FROM
+			member
+		WHERE
+			member_id = #{id}
+	</select>
+	
+	<select id="login" parameterType="java.util.Map" resultType="memberVO">
+		SELECT *
+		FROM
+			member a, member_address b, shopping_cart c
+		WHERE
+			a.member_id = b.member_id
+		AND
+			a.member_id = c.shopping_member_id
+		AND
+			a.member_id = #{member_id}
+		AND
+			a.member_pw = #{member_pw}
+			
+	</select>
+</mapper>

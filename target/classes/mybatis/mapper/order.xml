@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace ="com.sales.book.mybatis.mapper.order">
+
+	<select id="selectGoodsList" resultType="orderVO" parameterType="cartVO">
+		SELECT *, shopping_goods_id AS goods_id
+		FROM
+			shopping_cart a, shopping_cart_detail b, shopping_goods c, shopping_goods_image d, member e
+		WHERE
+			a.cart_id = b.shopping_cart_id
+		AND
+			a.shopping_member_id = e.member_id
+		AND
+			a.shopping_member_id = #{goods_id}
+		AND
+			b.shopping_goods_id = c.goods_id
+		AND 
+			c.goods_id = d.goods_id
+		AND
+			d.fileType = 'main_image'
+	</select>
+	
+	<insert id="insertNewOrder" parameterType="orderVO" >
+		INSERT INTO shopping_order
+		(order_member_id, delivery_method, delivery_address, total_price, orderer_name, orderer_hp1, orderer_hp2, orderer_hp3, orderer_email1, orderer_email2, receiver_name, receiver_hp1, receiver_hp2, receiver_hp3, delivery_state,
+		delivery_message, gift_wrapping, pay_method, card_com_name, card_pay_month)
+		VALUES
+		(#{member_id}, #{delivery_method}, #{delivery_address}, #{total_goods_price}, #{orderer_name}, #{orderer_hp1}, #{orderer_hp2}, #{orderer_hp3}, #{orderer_email1}, #{orderer_email2}, #{receiver_name}, #{receiver_hp1}, #{receiver_hp2}, #{receiver_hp3}, #{delivery_state}, 
+		#{delivery_message}, #{gift_wrapping}, #{pay_method}, #{card_com_name}, #{card_pay_month})
+	</insert>
+	
+	<select id="selectOrderNum" parameterType="orderVO" resultType="INT">
+		SELECT 
+			MAX(order_id)
+		FROM
+			shopping_order
+	</select>
+	
+	<insert id="insertNewOrderDetail" parameterType="orderVO">
+		INSERT INTO shopping_order_detail
+		(shopping_order_id, order_goods_id, good_quantity)
+		VALUES
+		(#{order_id}, #{goods_id}, #{cart_goods_qty})
+	</insert>
+	
+	<delete id="deleteCart" parameterType="orderVO">
+		DELETE 
+		FROM	
+			shopping_cart_detail
+		WHERE
+			shopping_cart_id = #{cart_id}
+		AND	
+			shopping_goods_id = #{goods_id}
+	</delete>
+</mapper>

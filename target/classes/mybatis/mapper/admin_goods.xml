@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sales.book.mybatis.mapper.admin_goods">
+
+	<select id="adminSelectGoods" resultType="adminGoodsVO" parameterType="java.util.Map">
+	 	SELECT *
+	 	FROM 	
+	 		shopping.shopping_goods 
+	 	WHERE
+	 		goods_credate between #{beginDate} AND #{endDate}	 		
+	</select>
+	
+	<!-- WHERE id between (#{section}-1)*100 + (#{pageNum}-1)*10+1 and (#{section}-1)*100 + (#{pageNum})*10 
+	현재 shopping_goods DB에 id 값 생성 안되있음
+	-->
+</mapper>

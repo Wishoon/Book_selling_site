@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC 
+    "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" 
+    "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+	<definition extends="base" name="/order/orderGoodsForm">
+		<put-attribute name="title" value="" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/order/orderGoodsForm.jsp" />
+	</definition>
+	<definition extends="base" name="/order/orderResult">
+		<put-attribute name="title" value="" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/order/orderResult.jsp" />
+	</definition>
+	
+</tiles-definitions>
